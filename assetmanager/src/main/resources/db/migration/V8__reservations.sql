@@ -1,20 +1,23 @@
 -- V8__reservations.sql
--- NOTE: Flyway is disabled (spring.flyway.enabled=false).
--- Hibernate ddl-auto=update creates this table automatically.
--- This script is provided for reference / future migration use.
+-- Add reservation table with proper foreign key constraints
 
-CREATE TABLE IF NOT EXISTS reservation (
-    id          VARCHAR(36)  NOT NULL PRIMARY KEY,
-    asset_id    VARCHAR(36)  NOT NULL,
-    reserved_by VARCHAR(36)  NOT NULL,
-    start_time  DATETIME     NOT NULL,
-    end_time    DATETIME     NOT NULL,
-    status      VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
-    created_at  DATETIME,
+CREATE TABLE reservation (
+    id VARCHAR(36) NOT NULL,
+    asset_id VARCHAR(36) NOT NULL,
+    reserved_by VARCHAR(36) NOT NULL,
+    start_time DATETIME(6) NOT NULL,
+    end_time DATETIME(6) NOT NULL,
+    status ENUM('ACTIVE','CANCELLED') NOT NULL DEFAULT 'ACTIVE',
+    created_at DATETIME(6),
+    PRIMARY KEY (id),
+    CONSTRAINT fk_reservation_asset 
+        FOREIGN KEY (asset_id) REFERENCES asset(id),
+    CONSTRAINT fk_reservation_user 
+        FOREIGN KEY (reserved_by) REFERENCES user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-    CONSTRAINT fk_reservation_asset
-        FOREIGN KEY (asset_id) REFERENCES asset(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_reservation_asset_status
+CREATE INDEX idx_reservation_asset_status 
     ON reservation (asset_id, status);
+
+CREATE INDEX idx_reservation_user 
+    ON reservation (reserved_by);
