@@ -262,12 +262,6 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL?.replace(/\/+$/, '') || 'ht
 function AssetQrModal({ asset, onClose, onRegenerated, showToast }) {
   const [regenLoading, setRegenLoading] = useState(false);
   const [cacheKey, setCacheKey] = useState(0);
-  const path = asset.qrCodePath || '';
-  const imgSrc = path.startsWith('data:')
-    ? path
-    : path
-      ? BACKEND_URL + (path.startsWith('/') ? path : '/' + path)
-      : '';
 
   const openLabel = () => {
     window.open(assetAPI.getQrLabelUrl(asset.id), '_blank', 'noopener,noreferrer');
@@ -295,14 +289,22 @@ function AssetQrModal({ asset, onClose, onRegenerated, showToast }) {
           <button type="button" className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body" style={{ textAlign: 'center' }}>
-          {imgSrc ? (
+          {asset?.qrCodePath?.startsWith('data:') ? (
             <img
-              src={`${imgSrc}?t=${cacheKey}`}
-              alt="Asset QR code"
-              style={{ maxWidth: 260, borderRadius: 12, border: '1px solid var(--border)' }}
+              src={asset.qrCodePath}
+              alt="QR Code"
+              style={{ width: 200, height: 200 }}
+            />
+          ) : asset?.qrCodeBase64 ? (
+            <img
+              src={'data:image/png;base64,' + asset.qrCodeBase64}
+              alt="QR Code"
+              style={{ width: 200, height: 200 }}
             />
           ) : (
-            <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>No QR on file yet. Regenerate to create one.</p>
+            <p style={{ color: '#8891aa' }}>
+              No QR code. Click Regenerate QR to generate one.
+            </p>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
             <a

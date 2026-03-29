@@ -25,5 +25,6 @@ public class AssetResponseDTO {
     private UUID roomId;
     private String roomName;
     private String qrCodePath;
+    private String qrCodeBase64;
     private LocalDateTime createdAt;
 }

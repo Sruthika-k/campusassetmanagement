@@ -24,6 +24,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { name, email, password, role } = formData;
+    
+    console.log('Registering:', { name, email, password, role });
+    
     if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill all required fields');
       return;
@@ -107,8 +111,8 @@ const Register = () => {
               <option value="STUDENT">Student</option>
               <option value="FACULTY">Faculty</option>
               <option value="TECHNICIAN">Technician</option>
-              {/* Note: Admin and Lab Incharge typically shouldn't be self-registered in production */}
               <option value="LAB_INCHARGE">Lab Incharge</option>
+              <option value="ADMIN">Admin</option>
             </select>
           </div>
           <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>

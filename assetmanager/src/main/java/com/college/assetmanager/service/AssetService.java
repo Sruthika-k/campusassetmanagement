@@ -201,6 +201,7 @@ public class AssetService {
                 .roomId(asset.getRoom() != null ? asset.getRoom().getId() : null)
                 .roomName(asset.getRoom() != null ? asset.getRoom().getName() : null)
                 .qrCodePath(asset.getQrCodePath())
+                .qrCodeBase64(asset.getQrCodeBase64())
                 .createdAt(asset.getCreatedAt())
                 .build();
     }

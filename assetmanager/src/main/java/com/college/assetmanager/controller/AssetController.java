@@ -7,6 +7,7 @@ import com.college.assetmanager.entity.AssetStatus;
 import com.college.assetmanager.repository.AssetRepository;
 import com.college.assetmanager.service.AssetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,9 @@ public class AssetController {
     private final AssetService assetService;
     private final AssetRepository assetRepository;
     private final com.college.assetmanager.service.QRCodeService qrCodeService;
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     @PostMapping
     public ResponseEntity<Asset> createAsset(@RequestBody AssetRequestDTO dto) {
@@ -47,11 +51,11 @@ public class AssetController {
             .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
                 org.springframework.http.HttpStatus.NOT_FOUND, "Asset not found"));
 
-        String scanUrl = assetService.scanUrlForAsset(asset.getId());
+        String scanUrl = frontendUrl + "/scan/" + asset.getId().toString();
         String deptName = asset.getDepartment() != null 
-            ? asset.getDepartment().getName() : "—";
+            ? asset.getDepartment().getName() : "Not assigned";
         String roomName = asset.getRoom() != null 
-            ? asset.getRoom().getName() : "—";
+            ? asset.getRoom().getName() : "Not assigned";
 
         byte[] labelBytes = qrCodeService.generateAssetLabel(
             asset.getId().toString(),
@@ -66,7 +70,7 @@ public class AssetController {
         return ResponseEntity.ok()
             .contentType(org.springframework.http.MediaType.IMAGE_PNG)
             .header(HttpHeaders.CONTENT_DISPOSITION,
-                "inline; filename=asset-" + asset.getId() + "-label.png")
+                "inline; filename=label-" + asset.getId() + ".png")
             .body(labelBytes);
     }
 
@@ -76,7 +80,7 @@ public class AssetController {
         Asset asset = assetService.regenerateQrCode(id);
         return ResponseEntity.ok(Map.of(
                 "message", "QR code regenerated successfully",
-                "qrCodePath", asset.getQrCodePath() != null ? asset.getQrCodePath() : ""
+                "assetId", asset.getId().toString()
         ));
     }
 

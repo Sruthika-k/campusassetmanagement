@@ -4,11 +4,14 @@ import com.college.assetmanager.dto.AuthResponse;
 import com.college.assetmanager.dto.LoginRequest;
 import com.college.assetmanager.dto.RegisterRequest;
 import com.college.assetmanager.entity.User;
+import com.college.assetmanager.entity.Role;
 import com.college.assetmanager.security.JwtUtil;
 import com.college.assetmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,13 +23,30 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            User createdUser = userService.createUser(request);
-            String role = createdUser.getRole() != null ? createdUser.getRole().name() : "USER";
-            String token = jwtUtil.generateToken(createdUser.getId().toString(), createdUser.getEmail(), role);
-            return ResponseEntity.ok(new AuthResponse(token, createdUser));
-        }
-        return ResponseEntity.badRequest().build();
+        
+        if (request.getName() == null || request.getName().isBlank())
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Name is required");
+        
+        if (request.getEmail() == null || request.getEmail().isBlank())
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Email is required");
+        
+        if (request.getPassword() == null || request.getPassword().isBlank())
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Password is required");
+        
+        if (request.getRole() == null)
+            request.setRole(Role.STUDENT);
+        
+        User created = userService.createUser(request);
+        String role = created.getRole().name();
+        String token = jwtUtil.generateToken(
+            created.getId().toString(), 
+            created.getEmail(), 
+            role
+        );
+        return ResponseEntity.ok(new AuthResponse(token, created));
     }
 
     @PostMapping("/login")

@@ -1,6 +1,7 @@
 package com.college.assetmanager.service;
 
 import com.college.assetmanager.entity.User;
+import com.college.assetmanager.entity.Role;
 import com.college.assetmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,17 +20,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User createUser(RegisterRequest request) {
-        String email = request.getEmail();
-        if (email == null || email.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Email already registered");
         }
-        User user = User.builder()
-                .name(request.getName())
-                .email(email)
-                .password(request.getPassword())
-                .role(request.getRole() != null ? request.getRole() : com.college.assetmanager.entity.Role.USER)
-                .build();
-        return createUser(user);
+        
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole() != null ? request.getRole() : Role.STUDENT);
+        
+        return userRepository.save(user);
     }
 
     public User createUser(User user) {
