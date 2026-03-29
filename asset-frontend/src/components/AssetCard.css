@@ -1,0 +1,246 @@
+/* Material You Asset Card Styles */
+
+.md-card {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--md-transition-normal) var(--md-easing-emphasized);
+}
+
+.md-card-interactive {
+  cursor: pointer;
+}
+
+.md-card:hover {
+  transform: scale(1.02);
+  box-shadow: var(--md-shadow-md);
+}
+
+.md-card-featured:hover {
+  transform: scale(1.03);
+  box-shadow: var(--md-shadow-lg);
+}
+
+/* Decorative blur shapes */
+.md-card-blur-shape {
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  border-radius: var(--md-radius-full);
+  background: radial-gradient(circle, 
+    rgba(103, 80, 164, 0.15) 0%, 
+    rgba(125, 82, 96, 0.1) 50%, 
+    transparent 70%
+  );
+  filter: var(--md-blur-3xl);
+  opacity: 0;
+  transition: opacity var(--md-transition-normal) var(--md-easing-emphasized);
+  pointer-events: none;
+}
+
+.md-card:hover .md-card-blur-shape {
+  opacity: 1;
+}
+
+.md-card-content {
+  position: relative;
+  z-index: 1;
+  padding: var(--md-space-6);
+}
+
+.md-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--md-space-4);
+  gap: var(--md-space-3);
+}
+
+.md-card-title {
+  flex: 1;
+  color: var(--md-on-surface);
+  line-height: var(--md-line-height-tight);
+  margin: 0;
+}
+
+.md-card-status {
+  color: white !important;
+  font-size: var(--md-label-small);
+  flex-shrink: 0;
+}
+
+.md-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-space-3);
+  margin-bottom: var(--md-space-4);
+}
+
+.md-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--md-space-2) 0;
+  border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.md-detail-row:last-child {
+  border-bottom: none;
+}
+
+.md-detail-label {
+  color: var(--md-on-surface-variant);
+  min-width: 80px;
+}
+
+.md-detail-value {
+  color: var(--md-on-surface);
+  text-align: right;
+}
+
+.md-detail-monospace {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.md-detail-condition {
+  color: var(--md-on-surface) !important;
+  font-size: var(--md-label-small);
+  background-color: transparent !important;
+  border: 1px solid currentColor !important;
+}
+
+.md-card-actions {
+  display: flex;
+  gap: var(--md-space-3);
+  align-items: center;
+  margin-top: var(--md-space-2);
+}
+
+.md-card-action-btn {
+  flex: 1;
+  min-width: 100px;
+}
+
+.md-card-primary-action {
+  background: linear-gradient(135deg, var(--md-primary), var(--md-secondary)) !important;
+}
+
+.md-card-primary-action:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: var(--md-shadow-lg);
+}
+
+/* Enhanced hover effects */
+.md-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(103, 80, 164, 0.02) 0%, 
+    rgba(125, 82, 96, 0.02) 50%, 
+    rgba(98, 91, 113, 0.02) 100%
+  );
+  opacity: 0;
+  transition: opacity var(--md-transition-normal) var(--md-easing-emphasized);
+  pointer-events: none;
+}
+
+.md-card:hover::before {
+  opacity: 1;
+}
+
+/* Group hover coordination */
+.md-card:hover .md-card-title {
+  color: var(--md-primary);
+}
+
+.md-card:hover .md-detail-label {
+  color: var(--md-primary);
+}
+
+/* Status chip enhancements */
+.md-card-status {
+  animation: md-pulse 2s infinite;
+}
+
+@keyframes md-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .md-card-content {
+    padding: var(--md-space-4);
+  }
+  
+  .md-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--md-space-2);
+  }
+  
+  .md-card-actions {
+    flex-direction: column;
+    gap: var(--md-space-2);
+  }
+  
+  .md-card-action-btn {
+    width: 100%;
+  }
+  
+  .md-detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--md-space-1);
+  }
+  
+  .md-detail-value {
+    text-align: left;
+  }
+}
+
+/* Focus states */
+.md-card:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+.md-card-action-btn:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.md-card-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.md-card-loading .md-card-content::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--md-outline);
+  border-top: 2px solid var(--md-primary);
+  border-radius: 50%;
+  animation: md-spin 1s linear infinite;
+}
+
+@keyframes md-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

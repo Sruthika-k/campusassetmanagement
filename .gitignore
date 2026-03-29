@@ -1,0 +1,19 @@
+# Java / Spring Boot
+target/
+bin/
+*.class
+*.log
+*.jar
+
+# Eclipse / IDE files
+.metadata/
+.settings/
+.project
+.classpath
+
+# Node / frontend
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

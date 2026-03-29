@@ -1,0 +1,63 @@
+/* Filter / Search Bar */
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.search-input {
+  padding-left: 40px;
+}
+
+.filter-select {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+/* Status Badges */
+.status-pill {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-AVAILABLE { background: #34d39915; color: #34d399; border: 1px solid #34d39930; }
+.status-BORROWED { background: #fbbf2415; color: #fbbf24; border: 1px solid #fbbf2430; }
+.status-UNDER_MAINTENANCE { background: #f8717115; color: #f87171; border: 1px solid #f8717130; }
+.status-IN_USE { background: #4f8ef715; color: #4f8ef7; border: 1px solid #4f8ef730; }
+.status-RETIRED { background: #ffffff10; color: #8891aa; border: 1px solid #ffffff20; }
+.status-PENDING { background: #fbbf2415; color: #fbbf24; border: 1px solid #fbbf2430; }
+.status-APPROVED { background: #34d39915; color: #34d399; border: 1px solid #34d39930; }
+.status-REJECTED { background: #f8717115; color: #f87171; border: 1px solid #f8717130; }
+.status-RETURNED { background: #ffffff10; color: #8891aa; border: 1px solid #ffffff20; }
+.status-OPEN { background: #f8717115; color: #f87171; border: 1px solid #f8717130; }
+.status-ASSIGNED { background: #4f8ef715; color: #4f8ef7; border: 1px solid #4f8ef730; }
+.status-RESOLVED { background: #34d39915; color: #34d399; border: 1px solid #34d39930; }
+
+@media (max-width: 640px) {
+  .filter-bar {
+    flex-direction: column;
+  }
+  .filter-select {
+    width: 100%;
+  }
+}
