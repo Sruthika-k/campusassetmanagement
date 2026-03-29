@@ -39,9 +39,16 @@ const Register = () => {
       await register(formData);
       navigate('/dashboard');
     } catch (err) {
-      setError(
-        err?.response?.data?.message || err?.response?.data || 'Registration failed'
-      );
+      console.error('Registration error:', err);
+      console.error('Error response:', err?.response);
+      console.error('Error data:', err?.response?.data);
+      console.error('Error message:', err?.response?.data?.message);
+      
+      const errorMessage = err?.response?.data?.message || 
+                        err?.response?.data || 
+                        'Registration failed';
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

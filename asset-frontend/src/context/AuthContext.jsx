@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as authLogin, logout as authLogout, getUser as getStoredUser } from '../services/authService';
+import { login as authLogin, logout as authLogout, register as authRegister, getUser as getStoredUser } from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -30,6 +30,13 @@ export const AuthProvider = ({ children }) => {
     return nextUser;
   };
 
+  const register = async (userData) => {
+    const data = await authRegister(userData.name, userData.email, userData.password, userData.role);
+    const nextUser = data.user || data;
+    setUser(nextUser);
+    return nextUser;
+  };
+
   const logout = () => {
     authLogout();
     setUser(null);
@@ -43,6 +50,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     login,
+    register,
     logout,
     hasRole,
     loading,
