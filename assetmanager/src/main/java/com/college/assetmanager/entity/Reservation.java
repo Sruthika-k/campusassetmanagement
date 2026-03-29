@@ -17,7 +17,7 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "VARCHAR(36)")
+    @Column(name = "id", columnDefinition = "VARCHAR(36)", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "asset_id", nullable = false)

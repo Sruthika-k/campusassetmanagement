@@ -46,11 +46,14 @@ const Departments = () => {
     
     setSubmitting(true);
     setError('');
-    console.log('Creating department:', newDeptName.trim());
+    const departmentData = { name: newDeptName.trim() };
+    console.log('Creating department:', departmentData);
     
     try {
-      const response = await departmentAPI.create({ name: newDeptName.trim() });
+      console.log('Making POST request to /api/departments with:', departmentData);
+      const response = await departmentAPI.create(departmentData);
       console.log('Department created successfully:', response.data);
+      console.log('Response status:', response.status);
       setNewDeptName('');
       setShowModal(false);
       showToastMsg('Department created successfully');
@@ -59,6 +62,7 @@ const Departments = () => {
       console.error('Error creating department:', err);
       console.error('Error response:', err?.response);
       console.error('Error data:', err?.response?.data);
+      console.error('Error status:', err?.response?.status);
       const errorMessage = err?.response?.data?.error || err?.response?.data?.message || 'Failed to create department';
       setError(errorMessage);
       alert('Failed to create department: ' + errorMessage);

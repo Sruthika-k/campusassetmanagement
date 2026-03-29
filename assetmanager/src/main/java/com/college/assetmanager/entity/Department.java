@@ -16,7 +16,7 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "VARCHAR(36)")
+    @Column(name = "id", columnDefinition = "VARCHAR(36)", updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, unique = true, length = 100)

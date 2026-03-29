@@ -6,8 +6,8 @@ import com.college.assetmanager.repository.DepartmentRepository;
 import com.college.assetmanager.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +43,6 @@ public class DepartmentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createDepartment(@RequestBody Department department) {
         log.info("Creating department: {}", department);
         
@@ -62,16 +61,15 @@ public class DepartmentController {
             
             Department saved = departmentRepository.save(department);
             log.info("Department created successfully: {}", saved);
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
             
         } catch (Exception e) {
             log.error("Error creating department: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body("Failed to create department: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create department: " + e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteDepartment(@PathVariable UUID id) {
         log.info("Deleting department with id: {}", id);
         
@@ -87,7 +85,7 @@ public class DepartmentController {
             
         } catch (Exception e) {
             log.error("Error deleting department {}: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(500).body("Failed to delete department: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete department: " + e.getMessage());
         }
     }
 }
