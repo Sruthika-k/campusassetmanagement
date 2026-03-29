@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -26,7 +28,16 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Skip JWT validation for OPTIONS requests (CORS preflight)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            log.debug("Skipping JWT filter for OPTIONS request: {}", request.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Skip JWT validation for auth endpoints
         if (request.getRequestURI().startsWith("/api/auth/")) {
+            log.debug("Skipping JWT filter for auth endpoint: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,10 +71,12 @@ public class JwtFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                         );
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                        log.debug("JWT authentication successful for: {}", email);
                     }
                 }
             }
         } catch (Exception e) {
+            log.warn("JWT validation failed: {}", e.getMessage());
             // Ignore parse/validation errors and continue filter chain as unauthenticated
         }
 
