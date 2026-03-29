@@ -19,5 +19,6 @@ public class Department {
     @Column(columnDefinition = "VARCHAR(36)")
     private UUID id;
 
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 }

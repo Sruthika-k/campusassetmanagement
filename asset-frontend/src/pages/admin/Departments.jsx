@@ -14,10 +14,18 @@ const Departments = () => {
   const fetchDepartments = useCallback(async () => {
     try {
       setLoading(true);
+      setError('');
+      console.log('Fetching departments...');
       const res = await departmentAPI.getAll();
+      console.log('Departments response:', res.data);
       setDepartments(res.data || []);
     } catch (err) {
-      setError('Failed to load departments');
+      console.error('Error fetching departments:', err);
+      console.error('Error response:', err?.response);
+      console.error('Error data:', err?.response?.data);
+      const errorMessage = err?.response?.data?.error || err?.response?.data?.message || 'Failed to load departments';
+      setError(errorMessage);
+      alert('Failed to load departments: ' + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -35,15 +43,25 @@ const Departments = () => {
   const handleAddDepartment = async (e) => {
     e.preventDefault();
     if (!newDeptName.trim()) return;
+    
     setSubmitting(true);
+    setError('');
+    console.log('Creating department:', newDeptName.trim());
+    
     try {
-      await departmentAPI.create({ name: newDeptName.trim() });
+      const response = await departmentAPI.create({ name: newDeptName.trim() });
+      console.log('Department created successfully:', response.data);
       setNewDeptName('');
       setShowModal(false);
       showToastMsg('Department created successfully');
       fetchDepartments();
     } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to create department');
+      console.error('Error creating department:', err);
+      console.error('Error response:', err?.response);
+      console.error('Error data:', err?.response?.data);
+      const errorMessage = err?.response?.data?.error || err?.response?.data?.message || 'Failed to create department';
+      setError(errorMessage);
+      alert('Failed to create department: ' + errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -51,18 +69,50 @@ const Departments = () => {
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Delete ${name}? This cannot be undone.`)) return;
+    
     try {
+      console.log('Deleting department:', id, name);
       await departmentAPI.delete(id);
+      console.log('Department deleted successfully:', id);
       showToastMsg('Department deleted');
       fetchDepartments();
     } catch (err) {
-      alert(err?.response?.data || 'Failed to delete department. Remove all rooms first.');
+      console.error('Error deleting department:', err);
+      console.error('Error response:', err?.response);
+      console.error('Error data:', err?.response?.data);
+      const errorMessage = err?.response?.data?.error || err?.response?.data?.message || 'Failed to delete department. Remove all rooms first.';
+      alert('Failed to delete department: ' + errorMessage);
     }
   };
 
   return (
     <div className="page-container">
       {toast && <div className="sys-toast">✅ {toast}</div>}
+      
+      {error && (
+        <div className="error-banner" style={{ 
+          backgroundColor: '#fee', 
+          border: '1px solid #fcc', 
+          padding: '12px', 
+          borderRadius: '6px', 
+          marginBottom: '20px',
+          color: '#c33'
+        }}>
+          ❌ {error}
+          <button 
+            onClick={() => setError('')} 
+            style={{ 
+              float: 'right', 
+              background: 'none', 
+              border: 'none', 
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="page-header">
         <div className="page-header-title">
