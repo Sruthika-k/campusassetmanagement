@@ -15,7 +15,8 @@ import java.util.UUID;
 public class MaintenanceIssue {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
     private UUID id;
 
     private UUID assetId;
